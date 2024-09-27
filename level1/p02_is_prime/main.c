@@ -10,10 +10,10 @@ int main() {
         }
     }
     if(count==1){
-        printf("%dæ˜¯ç´ æ•°",n);
+        printf("%dÊÇËØÊı",n);
     }
     else{
-        printf("%dä¸æ˜¯ç´ æ•°",n);
+        printf("%d²»ÊÇËØÊı",n);
     }
 
 
