@@ -1,6 +1,15 @@
-#include <printf.h>
-
-int main() {
-    printf("hello world!\n");
-    return 0;
+#include <stdio.h>
+int solution(int n,char source,char target,char help);
+int main(){
+    solution(4,'A','C','B');
+}
+int solution(int n,char source,char target,char help) {
+    if (n == 1) {
+        printf("%c->%c\n",source,target);
+    }
+    else{
+        solution(n-1,source,help,target);
+        printf("%c->%c\n",source,target);
+        solution(n-1,help,target,source);
+    }
 }
