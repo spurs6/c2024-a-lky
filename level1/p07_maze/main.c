@@ -29,23 +29,26 @@ void display(char x[6][11]){
 
 void move(char x[6][11]){
     while(true){
-        char op=getchar();
-        if(op=='d'&&x_position<11){
+        char op;
+        do {
+            op = getchar();
+        } while (op != 'a' && op != 'd' && op != 'w' && op != 's' && op != '\n' && op!=EOF);
+        if(op=='d'&&x_position<10){
             x_position++;
-        }else if(op=='a'&&x_position>=0){
+        }else if(op=='a'&&x_position>0){
             x_position--;
-        }else if(op=='w'&&y_position<11){
-            y_position++;
-        }else{
+        }else if(op=='w'&&y_position>0){
             y_position--;
+        }else if(op=='s'&&y_position<10){
+            y_position++;
         }
         if(x_position==x_exit_position&&y_position==y_exit_position){
             printf("you win the game!");
             break;
         }
-        x[x_position][y_position]='@';
+        x[y_position][x_position]='@';
         display(x);
-        x[x_position][y_position]=' ';
+        x[y_position][x_position]=' ';
         Sleep(1000);
     }
 }
