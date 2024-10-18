@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+
 int main() {
     time_t start=time(NULL);
     clock_t start1=clock();

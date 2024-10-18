@@ -60,9 +60,11 @@ void display() {
 void presentation() {
     new_map();
     while (true) {
-
         move();
         display();
         Sleep(100);
+        if(x_num==8&&y_num==18){
+            break;
+        }
     }
 }
