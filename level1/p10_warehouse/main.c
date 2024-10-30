@@ -1,57 +1,120 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#define MAX_SIZE 50
+#define MAX_NUMBER 10
 
-//æ‰“å°æ—¶å®šä¹‰ä¸´æ—¶å˜é‡æ˜¯å› ä¸ºä¿è¯åŽŸæœ‰æ•°æ®ç»“æž„çš„å®Œæ•´æ€§
-//é‡Šæ”¾æ—¶å®šä¹‰ä¸´æ—¶å˜é‡æ˜¯å‘æŠŠå¤´èŠ‚ç‚¹çš„nextæŒ‡é’ˆå­˜èµ·æ¥ï¼Œé˜²æ­¢é‡Šæ”¾å®Œå¤´èŠ‚ç‚¹åŽå†è®¿é—®nextå°±æ²¡æœ‰æ„ä¹‰äº†
+typedef struct{
+    int quantity;
+    char name[MAX_SIZE];
+}inventory;
 
-typedef struct Node {
-    int data;
-    struct Node* next;
-}Node;
-//ä¹‹å‰æƒ³ä¿®æ”¹æ•´åž‹çš„å€¼ï¼Œä¼ çš„æ˜¯å‚æ•°çš„åœ°å€
-//çŽ°åœ¨æƒ³ä¿®æ”¹æŒ‡é’ˆçš„å€¼ï¼Œè€ŒæŒ‡é’ˆçš„å€¼å°±æ˜¯åœ°å€ï¼Œåœ°å€å°±æ˜¯ä¸€ä¸ªæŒ‡é’ˆï¼Œå› æ­¤è¿˜è¦å®šä¹‰ä¸€ä¸ªæŒ‡å‘åœ°å€çš„æŒ‡é’ˆï¼Œæ¥ä¿®æ”¹æŒ‡é’ˆçš„åœ°å€
-
-
-Node* insertNode(Node*head,int value) {
-    Node* newnode = (Node*)malloc(sizeof(Node));
-    if (newnode == NULL) {
-        printf("The memory allocation is faluty!");
+int count=0;
+inventory item[MAX_NUMBER];
+//²»ÄÜÔÚÎÄ¼þ×÷ÓÃÓòÉùÃ÷¿É±äÊý×é³¤¶È£¨ÎÄ¼þ×÷ÓÃÓòÊÇfile scope£©
+//Òò´ËÖ»ÄÜÓÃÒ»¸öÈ·¶¨µÄºê¶¨ÒåÀ´³õÊ¼»¯Êý×éµÄ³¤¶È
+void load(){
+    FILE*file=fopen("inventory.txt","r");
+    if(file==NULL) {
+        printf("The inventory is empty!\n");
+        return;
     }
-    newnode->data = value;
-    newnode->next = NULL;
-    if (head == NULL) {
-        head = newnode;
-    }
+    //Ö»ÄÜÓÃÊý×é£¬²»ÄÜÓÃÖ¸ÕëµÄÔ­Òò£ºµ÷ÓÃ½á¹¹ÌåÀïÃæ³ÉÔ±µÄ·½Ê½ÓÐÁ½ÖÖ£º
+    //Ò»ÖÖÊÇÊ¹ÓÃ¶¨ÒåµÄ³ÉÔ±À´µãÈ¡µ÷ÓÃ
+    //Ò»ÖÖÊÇ¶¨ÒåÖ¸ÕëÀ´ÓÃ¼ýÍ·µ÷ÓÃ
     else {
-        Node* current=head;
-        while (current->next != NULL) {
-            current = current->next;
+        while (fscanf(file, "%s %d", item[count].name, &item[count].quantity) == 2) {
+            count++;
         }
-        current->next = newnode;
     }
-    return head;
+    //scanf¶ÁÈ¡ÍêµÄÊý¾Ý¶¼Í¨¹ý±äÁ¿µÄµØÖ·´¢´æÔÚ±äÁ¿ÁË£¬¶øÕâ¸öÔ­Àí¸úscanfÊÇÍêÈ«ÏàÍ¬µÄ
+    //Ö»ÊÇÇ°Õß´ÓÎÄµµÁ÷ÖÐ»ñÈ¡Êý¾Ý£¬¶øºóÕß´Ó¼üÅÌÁ÷ÖÐ»ñÈ¡Êý¾Ý
+    fclose(file);
 }
 
-void printList(Node* head) {
-    Node* temp = head;
-    while (temp != NULL) {
-        printf("%d->", temp->data);
-        temp = temp->next;
+void display(){
+    printf("Now the inventory has goods as follows:\n");
+    for(int i=0;i<count;i++){
+        printf("%s %d\n",item[i].name,item[i].quantity);
     }
-    printf("NULL\n");
 }
 
-int main() {
-    Node* head=NULL;
-    head=insertNode(head, 1);
-    head=insertNode(head, 2);
-    head=insertNode(head, 3);
-    printList(head);
-    Node* temp;
-    while (head!=NULL) {
-        temp = head->next;
-        free(head);
-        head = temp;
+void save(){
+    FILE*file=fopen("inventory.txt","w");
+    for(int i=0;i<count;i++){
+        fprintf(file,"%s %d",item[i].name,item[i].quantity);
+    }
+    fclose(file);
+}
+
+void import(){
+    FILE*file=fopen("inventory.txt","w");
+    if(count==MAX_NUMBER){
+        printf("The inventory is already full!");
+        return;
+    }
+    printf("ÇëÊäÈëÄãÏëÌí¼ÓµÄ»õÎï£º");
+    scanf("%s",item[count].name);
+    printf("ÇëÊäÈëÄãÏëÌí¼ÓµÄÊýÁ¿£º");
+    scanf_s("%d",&item[count].quantity);
+    for(int i=0;i<count;i++){
+        if(strcmp(item[i].name,item[count].name)==0){
+             item[i].quantity=item[i].quantity+item[count].quantity;
+        }
+    }
+    count++;
+    //Õâ¸öcountÕæµÄÊÇÌ«½Æ»«ÁË£¬¼ÓÔØº¯ÊýµÄ×îºó£¬°Ñcount¼ÓÁË1£¬
+    //Êµ¼ÊÉÏ´ËÊ±¶ÔÓ¦µÄcountÊÇÃ»ÓÐÊý¾ÝµÄ£¬Õâ´ÎÖ±½Ó´«Èë½øÈ¥
+    //µ«ÊÇ±£´æµÄÊ±ºòÐèÒª±éÀú£¬µ«±éÀúÎÞ·¨±éÀúµ½count£¬Òò´ËÕâÀïÊÖ¶¯¸øcount¼Ó1
+    save();
+    fclose(file);
+    display();
+}
+
+void export() {
+    FILE *file = fopen("inventory.txt", "w");
+    if (count == 0) {
+        printf("The inventory is already empty!");
+        return;
+    }
+    char *title = NULL;
+    int value = 0, i = 0;
+    title = (char *) malloc(sizeof(char) * MAX_SIZE);
+    printf("ÇëÊäÈëÄãÏëÒÆ³ýµÄ»õÎï£º");
+    scanf("%s", title);
+    printf("ÇëÊäÈëÄãÏëÒÆ³ýµÄÊýÁ¿£º");
+    scanf_s("%d", &value);
+    for(int i=0;i<count;i++) {
+        if (strcmp(item[i].name, title) == 0) {
+            item[i].quantity = item[i].quantity - value;
+        }
+    } //ÏÈÖ´ÐÐ³ö¿âµÄËãÊõ²Ù×÷
+    save();//Ö±½ÓÓÃ¶¨ÒåºÃµÄ±£´æº¯Êý
+    fclose(file);
+    free(title);
+    display();
+}
+//Í¨¹ýÕâ¸öÊµÑé£¬ÎÒÉî¿ÌÌå»áµ½ÁËÄÔ×ÓÊÇ¸ö¶àÃ´ºÃÓÃµÄ¶«Î÷£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡
+//µÚÒ»´Î³ö´í£¬ÎÒÖ»ÊÇµ¥´¿µÄµÄÐÞ¸ÄÁËitemÊý×éÀïÃæµÄÊýÖµ£¬²¢Ã»ÓÐ½«Ëü´æ·ÅÔÚÊý×éÀïÃæ
+//È»ºóÎÒ¶¨ÒåÁËÒ»¸öfile½á¹¹Ö¸Õë£¬½«Æäfprintfµ½ÎÄµµÀïÃæ
+//ÓÖ·¸ÁËµÚ¶þ¸ö´íÎó£ºÎÒ¿Ï¶¨Ñ¡ÔñwÄ£Ê½£¬Ò²¾ÍÊÇÖØÐ´Ä£Ê½£¬µ±Ëü´ò¿ªÒ»¸öÒÑ¾­´æÔÚµÄÎÄ¼þÊ±£¬Ëü»áÏÈ½«ÀïÃæµÄÄÚÈÝÇå¿Õ
+//µ«ÎÒÏàµ±È»µÄÖ»½«ÐÞ¸ÄµÄÊý¾Ýfprintf½øÈ¥£¬×ÔÈ»×îºóÖ»ÓÐÒ»¸ö½á¹û£¬
+//ËùÒÔÎÒ¾ö¶¨µ¥¶ÀÓÃforÑ­»·ÖØÐ´Ò»´Î
+//´ËÊ±ÎÒÓÖ·¸ÁËµÚÈý¸ö´íÎó£¬ÎÒÓÖ¼ÓÔØÁËÒ»´Î£¬ÓÚÊÇ³öÏÖÁËÁÐ±íÖØ¸´Á½´ÎµÄÇë¿ö
+//×îºóÎÒ·¢ÏÖÎÒÒÑ¾­ÔÚÖ÷º¯ÊýÀïÃæ¼ÓÔØÁËÒ»´Î£¬¶øÖ´ÐÐÒ»´Î³ÌÐòÏÔÈ»Ö»ÐèÒª¼ÓÔØÒ»´Î
+
+int main(){
+    int choice=0;
+    load();
+    display();
+    printf("ÇëÊäÈëÄãÏë½øÐÐµÄ²Ù×÷£º");
+    scanf_s("%d",&choice);
+    switch(choice){
+        case 1:display();break;
+        case 2:import();break;
+        case 3:export();break;
+        case 4:save();break;
     }
 }
+
 

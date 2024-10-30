@@ -1,9 +1,9 @@
 #include <stdio.h>
-int solution(int n,char source,char target,char help);
+void solution(int n,char source,char target,char help);
 int main(){
     solution(4,'A','C','B');
 }
-int solution(int n,char source,char target,char help) {
+void solution(int n,char source,char target,char help) {
     if (n == 1) {
         printf("%c->%c\n",source,target);
     }
