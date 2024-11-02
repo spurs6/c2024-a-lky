@@ -10,10 +10,10 @@ int main() {
         }
     }
     if(count==1){
-        printf("%d是素数",n);
+        printf("%d is prime number!",n);
     }
     else{
-        printf("%d不是素数",n);
+        printf("%d is not prime number!",n);
     }
 
 

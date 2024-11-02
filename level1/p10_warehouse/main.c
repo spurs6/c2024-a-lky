@@ -53,6 +53,7 @@ void import(){
         printf("The inventory is already full!");
         return;
     }
+    int x=0;
     printf("请输入你想添加的货物：");
     scanf("%s",item[count].name);
     printf("请输入你想添加的数量：");
@@ -60,9 +61,13 @@ void import(){
     for(int i=0;i<count;i++){
         if(strcmp(item[i].name,item[count].name)==0){
              item[i].quantity=item[i].quantity+item[count].quantity;
+             x=1;
         }
     }
-    count++;
+    if(x==0){
+        count++;
+    }
+
     //这个count真的是太狡猾了，加载函数的最后，把count加了1，
     //实际上此时对应的count是没有数据的，这次直接传入进去
     //但是保存的时候需要遍历，但遍历无法遍历到count，因此这里手动给count加1
