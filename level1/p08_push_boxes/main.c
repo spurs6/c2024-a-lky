@@ -1,48 +1,117 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-char maze[10][10];
-char people_position;
-char box_position;
+#define MAX_LEVELS 3
+#define MAX_MAP_SIZE 20
 
-void load(int value){
-    char name[100];
-    sprintf(name,"maze%d.txt",value);
-    FILE*file=fopen("name","r");
-    for(int i=0;i<10;i++){
-        for(int j=0;j<10;j++){
-            fscanf(file,"%c",&maze[i][j]);
-            //用scanf给数组赋值时，还是要加取地址符的，原因是给数组赋值，
-            //如果只涉及数组，那其实数组的单个元素就可以看成是一个单独的int型变量
-            //自然用scanf时要用取地址运算符，printf时用数组即可
-            //数组名代笔数组首个元素的地址，通过对数组名自增就能实现对数组的初始化
-            //然后打印时只需要用解引用运算符即可
-        }
-    }
-    fclose(file);
-}
+#define PLAYER '@'
+#define BOX '$'
+#define STORAGE '*'
+#define EMPTY ' '
 
-void display(){
-    for(int i=0;i<10;i++){
-        for(int j=0;j<10;j++){
-            printf("%c",maze[i][j]);
+int playerX=1;
+int playerY=1;
+
+char map[MAX_MAP_SIZE][MAX_MAP_SIZE];
+int rows=6, cols=15;
+
+int steps = 0;
+int score = 0;
+
+void displayMap() {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%c ", map[i][j]);
         }
         printf("\n");
     }
 }
 
-void move(char ch){
-    switch(ch){
-        case 'w':
+void move(int dx, int dy) {
+    int newX = playerX + dx;
+    int newY = playerY + dy;
+    if (map[newX][newY] == BOX) {
+        int boxNewX = newX + dx;
+        int boxNewY = newY + dy;
+        if (boxNewX >= 0 && boxNewX < rows && boxNewY >= 0 && boxNewY < cols && map[boxNewX][boxNewY] == EMPTY) {
+            map[boxNewX][boxNewY] = BOX;
+            map[newX][newY] = PLAYER;
+            map[playerX][playerY] = EMPTY;
+            playerX = newX;
+            playerY = newY;
+        }
+    } else if (map[newX][newY] == EMPTY||map[newX][newY]==STORAGE) {
+        map[newX][newY] = PLAYER;
+        map[playerX][playerY] = EMPTY;
+        playerX = newX;
+        playerY = newY;
     }
+    steps++;
 }
 
-void check(){
-
+int isGameOver() {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (map[i][j] == BOX && map[i][j] != STORAGE) {
+                return 0;
+            }
+        }
+    }
+    return 1;
 }
 
-int main(){
-
+void loadLevel(int level) {
+    char filename[20];
+    sprintf(filename, "maze%d.txt", level);
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        printf("Failed to open level file.\n");
+        exit(1);
+    }
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            fscanf(file,"%c",map[i][j]);
+        }
+        fscanf(file,"\n");//在这里加入一个读取换行符的操作
+    }
+    fclose(file);
 }
 
+void saveScore(int level, int score) {
+    char filename[20];
+    sprintf(filename, "scores.txt");
+    FILE *file = fopen(filename, "a");
+    if (!file) {
+        printf("Failed to open scores file.\n");
+        exit(1);
+    }
+    fprintf(file, "Level %d: %d steps\n", level, score);
+    fclose(file);
+}
+
+int main() {
+    char command;
+    int level = 1;
+    while (level <= MAX_LEVELS) {
+        loadLevel(level);
+        steps = 0;
+        while (!isGameOver()) {
+            displayMap();
+            printf("Move with W (up), A (left), S (down), D (right), Q (quit): ");
+            scanf(" %c", &command);
+            switch (command) {
+                case 'w': move(-1, 0); break;
+                case 'a': move(0, -1); break;
+                case 's': move(1, 0); break;
+                case 'd': move(0, 1); break;
+                case 'q': exit(0);
+                default: printf("Invalid command.\n"); break;
+            }
+        }
+        score=steps;
+        printf("Congratulations, you've won!\n");
+        saveScore(level, score);
+        level++;
+    }
+    return 0;
+}

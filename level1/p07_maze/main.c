@@ -27,6 +27,8 @@ void display(char x[6][11]){
     printf("\n");
 }
 
+
+
 void move(char x[6][11]){
     while(true){
         char op;
@@ -57,7 +59,10 @@ int main(){
     display(a);
     move(a);
     return 0;
+    //老师好，这个程序用clion来看效果不太好，用vs看效果比较好
 }
+
+
 
 
 
