@@ -1,6 +1,8 @@
 project(level1)
 
-add_executable(p01_running_letter p01_running_letter/main.c)
+add_executable(p01_running_letter p01_running_letter/main.c
+        ../level2/NeuralNetworks/testing.cpp
+        ../level2/SkipList/SkipList.cpp)
 
 add_executable(p02_is_prime p02_is_prime/main.c)
 

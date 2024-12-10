@@ -1,0 +1,6 @@
+watermelon 13
+pear 15
+apple 31
+banana 33
+grape 34
+peach 45
